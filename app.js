@@ -23,8 +23,18 @@ app.use(express.json())
 if(process.env.NODE_ENV=== "development"){
     app.use(morgan('dev'))
 }
+//helpers
+const{formatDate}=require('./helpers/hbs')
 //template
-app.engine('.hbs', exphbs({defaulrLayout:'main', extname: '.hbs'}));
+app.engine('.hbs', 
+    exphbs(
+        {
+            helpers:{formatDate},
+            defaulrLayout:'main',
+            extname: '.hbs'
+        }
+        )
+    );
 app.set('view engine', '.hbs');
 
 //static
