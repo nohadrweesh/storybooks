@@ -7,3 +7,8 @@
 .fa-small{
     font-size: 15px !important;
 }
+
+.btn-float{
+    float:left;
+    margin-right:10px;
+}

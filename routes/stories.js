@@ -67,4 +67,92 @@ router.get('/edit/:id',ensureAuth,async (req,res)=>{
     }
 })
 
+//@descp : Update stories
+//@route : /stories/id
+router.put('/:id',ensureAuth,async (req,res)=>{
+    try {
+        let story=await Story.findOne({_id:req.params.id}).lean()
+        if(!story){
+            res.render('error/404')
+        }
+        if(story.user != req.user.id){
+            res.redirect('/stories')
+        }
+        story=await Story.findOneAndUpdate({_id:req.params.id},req.body,{
+            new:true,
+            runValidators:true,
+
+        })
+         res.redirect('/dashboard')
+        
+    } catch (error) {
+        console.log(error)
+        res.render('error/500')
+        
+    }
+})
+
+//@descp : del stories
+//@route : /stories/id
+router.delete('/:id',ensureAuth,async (req,res)=>{
+    try {
+        let story=await Story.findOne({_id:req.params.id}).lean()
+        if(!story){
+            res.render('error/404')
+        }
+        if(story.user != req.user.id){
+            res.redirect('/stories')
+        }
+        story=await Story.remove({_id:req.params.id})
+         res.redirect('/dashboard')
+        
+    } catch (error) {
+        console.log(error)
+        res.render('error/500')
+        
+    }
+})
+
+
+//@descp : Show story page
+//@route : /stories/id
+router.get('/:id',ensureAuth,async (req,res)=>{
+    try {
+        const story=await Story.findOne({_id:req.params.id}).populate('user').lean()
+        if(!story){
+            res.render('error/404')
+        }
+        
+        res.render('stories/show',{
+            story:story
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.render('error/500')
+        
+    }
+})
+
+//@descp : Show user stories page
+//@route : /stories/user/id
+router.get('/user/:userId',ensureAuth,async (req,res)=>{
+    try {
+        const stories=await Story.find({
+            user:req.params.userId,
+            status:'public'
+
+        }).populate('user')
+        .lean()
+         res.render('stories',{
+            stories:stories
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.render('error/500')
+        
+    }
+})
+
 module.exports =router
