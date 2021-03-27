@@ -24,12 +24,12 @@ if(process.env.NODE_ENV=== "development"){
     app.use(morgan('dev'))
 }
 //helpers
-const{formatDate}=require('./helpers/hbs')
+const{formatDate,truncate,stripTags,editIcon,select}=require('./helpers/hbs')
 //template
 app.engine('.hbs', 
     exphbs(
         {
-            helpers:{formatDate},
+            helpers:{formatDate,truncate,stripTags,editIcon,select},
             defaulrLayout:'main',
             extname: '.hbs'
         }
@@ -53,6 +53,12 @@ app.use(session({
 //passport
 app.use(passport.initialize())
 app.use(passport.session()) //need express sessions
+
+//Global variables
+app.use(function(req,res,next){
+    res.locals.user=req.user ||null
+    next()
+})
 
 //routes
 app.use('/',require('./routes/index'))

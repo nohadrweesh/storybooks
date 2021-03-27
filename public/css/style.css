@@ -3,3 +3,7 @@
     width: 400px;
     margin-top: 50px;
 }
+
+.fa-small{
+    font-size: 15px !important;
+}
