@@ -25,4 +25,24 @@ router.post('/',ensureAuth,async (req,res)=>{
     }
 })
 
+//@descp : Show public stories page
+//@route : /stories
+router.get('/',ensureAuth,async (req,res)=>{
+    try {
+        res.render('stories/index',{
+            stories:await Story.find({status:'public'})
+            .populate('user')
+            .sort({createdAt:'DESC'})
+            .lean()
+        })
+        
+    } catch (error) {
+        console.log(error)
+        res.render('error/500')
+        
+    }
+
+    
+})
+
 module.exports =router
